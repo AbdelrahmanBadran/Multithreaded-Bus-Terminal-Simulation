@@ -9,86 +9,87 @@ import java.util.concurrent.Semaphore;
 public class WaitingAreas {
     int AreaID;
 
-    public WaitingAreas() {
-    }
-
+    public WaitingAreas() {}
+    
     public WaitingAreas(int AreaID) {
         this.AreaID = AreaID;
     }
 }
 
     class waitingArea1 {
-        Semaphore sem = new Semaphore(10, true);
-
-        public void enterA1(int custID){
-            if(sem.availablePermits() < 1) {
+        
+        private static final Semaphore sem1 = new Semaphore(10, true); //1truee
+        
+        public void enterA1(customer cust) throws InterruptedException{
+            if(sem1.availablePermits() < 1) {
                 System.out.println("\n\n\tSorry, waiting area 1 is full."
-                + "\n\t\tCustomer# " + custID + " has to wait for vacancy...");
+                + "\n\t\tCustomer# " + cust.id  + " has to wait for vacancy...");
             }
-                try{
-                    sem.acquire();
-                    System.out.println("\nCustomer# " + custID + " entered"
-                    + " Waiting Area 1");
+            try{
+                sem1.acquire();
+                System.out.println("\nCustomer# " + cust.id  + " entered"
+                + " Waiting Area 1");
             }
-            catch (Exception e) {}
+            catch (InterruptedException e) {}
         }
 
-        public void leaveA1(int custID) throws InterruptedException{
+        public void leaveA1(customer cust) throws InterruptedException{
             //When bus is here
-            sem.release();
-            Thread.sleep(1000);
-            System.out.println("\n\tCustomer# " + custID + " is leaving "
+            System.out.println("\n\tCustomer# " + cust.id  + " is leaving "
                     + " Waiting Area 1...");
+            sem1.release();
         }
     }
 
     class waitingArea2 {
-        Semaphore sem = new Semaphore(10, true);
+        private static final Semaphore sem2 = new Semaphore(10, true);
 
-        public void enterA2(int custID){
-            if(sem.availablePermits() < 1) {
+        public void enterA2(customer cust) throws InterruptedException{
+            if(sem2.availablePermits() < 1) {
                 System.out.println("\n\n\tSorry, waiting area 2 is full."
-                + "\n\t\tCustomer# " + custID + " has to wait for vacancy...");
+                + "\n\t\tCustomer# " + cust + " has to wait for vacancy...");
+                
             }
-                try{
-                    sem.acquire();
-                    System.out.println("\nCustomer# " + custID + " entered"
-                    + " Waiting Area 2");
+            try{
+                sem2.acquire();
+                System.out.println("\nCustomer# " + cust.id  + " entered"
+                + " Waiting Area 2");
             }
-            catch (Exception e) {}
+            catch (InterruptedException e) {}
         }
 
-        public void leaveA2(int custID) throws InterruptedException{
+        public void leaveA2(customer cust) throws InterruptedException{
             //When bus is here
-            sem.release();
-            Thread.sleep(1000);
-            System.out.println("\n\tCustomer# " + custID + " is leaving "
+            
+            System.out.println("\n\tCustomer# " + cust.id  + " is leaving "
                     + " Waiting Area 2...");
+            sem2.release();
         }
     }
 
     class waitingArea3 {
-        Semaphore sem = new Semaphore(10, true);
-
-        public void enterA3(int custID){
-            if(sem.availablePermits() < 1) {
+        private static final Semaphore sem3 = new Semaphore(10, true);
+        
+        public void enterA3(customer cust){
+           
+            if(sem3.availablePermits() < 1) {
                 System.out.println("\n\n\tSorry, waiting area 3 is full."
-                + "\n\t\tCustomer# " + custID + " has to wait for vacancy...");
+                + "\n\t\tCustomer# " + cust.id + " has to wait for vacancy...");
             }
-                try{
-                    sem.acquire();
-                    System.out.println("\nCustomer# " + custID + " entered"
-                    + " Waiting Area 3");
+            try{
+                sem3.acquire();
+                System.out.println("\nCustomer# " + cust.id  + " entered"
+                + " Waiting Area 3");
             }
-            catch (Exception e) {}
+            catch (InterruptedException e) {}
         }
 
-        public void leaveA3(int custID) throws InterruptedException{
+        public void leaveA3(customer cust) throws InterruptedException{
             //When bus is here
-            sem.release();
-            Thread.sleep(1000);
-            System.out.println("\n\tCustomer# " + custID + " is leaving "
+            
+            System.out.println("\n\tCustomer# " + cust.id  + " is leaving "
                     + " Waiting Area 3...");
+            sem3.release();
         }
     }
 

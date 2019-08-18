@@ -7,11 +7,9 @@ package busterminal;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 
 public class BusTerminal {
-    
     
     public static void main(String[] args) throws InterruptedException {
         int custID = 1;
@@ -21,17 +19,17 @@ public class BusTerminal {
      
         for (int i = 0; i < 150; i++) {
             //if (CustomerExec.currentPoolSize == CustomerExec.MaxPoolSize) {                
-            //}
+            //}//use a semaphore to control entrance to terminal (2 parts)
             
             customer cust = new customer(custID);//change///
             CustomerExec.submit(cust);
             
-            int custInterval = (int)( 100 + Math.random() *1000  ); ///change later///
+            int custInterval = (int)( 100 + Math.random() *100); ///change later///
             
             try{
                 Thread.sleep(custInterval);
             }
-            catch (Exception e) {}
+            catch (InterruptedException e) {}
 
             custID++;
         }
