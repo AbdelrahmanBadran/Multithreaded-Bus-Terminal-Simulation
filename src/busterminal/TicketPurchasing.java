@@ -9,18 +9,17 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class TicketPurchasing{
+    
 //    ticketMachine tMachine = new ticketMachine();
 //    ticketCounter1 tCounter1 = new ticketCounter1();
 //    ticketCounter2 tCounter2 =new ticketCounter2();
-//    
 //    ExecutorService allTickets = Executors.newFixedThreadPool(3);
 }
 
  class ticket { 
-
-    public ticket() {}
-    
     int ticketID;
+    
+    public ticket(){}        
     
     public ticket(int ticketID) {
         this.ticketID = ticketID;
@@ -34,7 +33,6 @@ class ticketMachine{
     
     private static final ReentrantLock tMachineLock  = new ReentrantLock(true);
     
-    boolean success = false;
     ticket ticket;
     
     protected ticket buyMTicket(customer cust ) throws InterruptedException, ExecutionException{
@@ -45,17 +43,14 @@ class ticketMachine{
         
         if (down) {
             System.out.println("\n\n\t\tSorry Customer # " + cust.id + "...Ticket Machine is Down!....\n");
-            Thread.sleep(500);
+            Thread.sleep(250);
             System.out.println("\n\tYes, Ticket Machine has been is fixed");
 //        int getTicketFrom = (int )( 1 + Math.random() *2 ); //send customers to booth
         }
             
         System.out.println("\n\tCustomer # " + cust.id + " is now using the Ticket Machine...");
           
-        Thread.sleep(500);
-
         Future<ticket> newTicket = tickMachine.submit(tickMPrinter);
-
         Thread.sleep(500);
 
         if(newTicket.isDone()){
@@ -65,18 +60,17 @@ class ticketMachine{
         else{
             System.out.println("\n\tCustomer # " + cust.id  + " did not get a ticket...");
         }
-        
-          return ticket;
           
         } finally{
             tMachineLock.unlock();  
-        }
+        }        
+        return ticket;
         
     }
     
     private class tMachinePrinter implements Callable<ticket>{
         @Override
-        public ticket call() throws Exception {
+        public synchronized ticket call() throws Exception {
             int ticketID = (int )( 1 + Math.random() *3);
             ticket ticket = new ticket(ticketID);
             return ticket;
@@ -88,12 +82,13 @@ class ticketCounter1{
     
     ExecutorService tickCounter1 = Executors.newSingleThreadExecutor();
     tCounterPrinter tickC1Printer = new tCounterPrinter();
+    
     private static final ReentrantLock tCounter1Lock  = new ReentrantLock(true);
     
-    boolean success;
     ticket ticket = null;
 
     protected ticket buyC1Ticket(customer cust) throws InterruptedException, ExecutionException{
+       
         tCounter1Lock.lock();
         
         try{    
@@ -101,15 +96,13 @@ class ticketCounter1{
             boolean bbreak = rnd.nextDouble() <= 0.1;
             
             if (bbreak) {
-                System.out.println("\n\n\t\tSorry Customer # " + cust.id+ "...Counter 1 Personnel is on break!....\n");
+                System.out.println("\n\n\t\tSorry Customer # " + cust.id+ " Counter 1 Personnel is on break!....will be back Shortly\n");
+                Thread.sleep(250);
             }
 
             System.out.println("\n\tCustomer # " + cust.id+ " is now at Ticket Counter 1...");
 
-            Thread.sleep(500);
-
             Future<ticket> newTicket = tickCounter1.submit(tickC1Printer);
-
             Thread.sleep(500);
 
             if(newTicket.isDone()){
@@ -120,11 +113,11 @@ class ticketCounter1{
             else{
                 System.out.println("\n\tCustomer # " + cust.id + " did not get a ticket...");
             }
-            return ticket;
+            
         } finally{
             tCounter1Lock.unlock();
         }
-        
+        return ticket;
     }       
 }
 
@@ -135,7 +128,6 @@ class ticketCounter2 {
     
     private static final ReentrantLock tCounter2Lock  = new ReentrantLock(true);
     
-    boolean success;
     ticket ticket = null;
     
     protected ticket buyC2Ticket(customer cust) throws InterruptedException, ExecutionException{
@@ -146,15 +138,13 @@ class ticketCounter2 {
         boolean bbreak = rnd.nextDouble() <= 0.1;
         
         if (bbreak) {
-            System.out.println("\n\n\t\tSorry Customer # " + cust.id + "...Counter 2 Personnel is on break!....\n");
+            System.out.println("\n\n\t\tSorry Customer # " + cust.id + " Counter 2 Personnel is on break!.....will be back Shortly\n");
+            Thread.sleep(250);
         }
         
         System.out.println("\n\tCustomer # " + cust.id + " is now at Ticket Counter 2...");
-        
-        Thread.sleep(500);
 
         Future<ticket> newTicket = tickCounter2.submit(tickC2Printer);
-
         Thread.sleep(500);
         
         if(newTicket.isDone()){
@@ -164,10 +154,11 @@ class ticketCounter2 {
         else{
             System.out.println("\n\tCustomer # " + cust.id + " did not get a ticket...");
         }
-        return ticket;
+        
         } finally{
             tCounter2Lock.unlock();
         }
+        return ticket;
     }       
 }
 
@@ -179,12 +170,6 @@ class ticketCounter2 {
             return ticket;
         }
     }
-
-//public class TicketArea {
-//    ExecutorService tMachine = Executors.newFixedThreadPool(3);
-//
-//}
-    //2. Get ticket: FixedPool of 3  //Receive Customers and give them a ticket
 
     //Ways to handle customer queue: 1TMachine 1TCounter,Randomly here and there, 
     //or based on the number in the queue of TM

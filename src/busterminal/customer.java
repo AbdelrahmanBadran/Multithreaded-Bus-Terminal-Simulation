@@ -8,9 +8,9 @@ public class customer implements Runnable{
     ticketMachine tMachine = new ticketMachine();
     ticketCounter1 tCounter1 =new ticketCounter1();
     ticketCounter2 tCounter2 =new ticketCounter2();
-    waitingArea1 wArea1 = new waitingArea1();
-    waitingArea2 wArea2 = new waitingArea2();
-    waitingArea3 wArea3 = new waitingArea3();    
+    WaitingArea1 wArea1 = new WaitingArea1(this);
+    WaitingArea2 wArea2 = new WaitingArea2();
+    WaitingArea3 wArea3 = new WaitingArea3();    
     
     int id;
     int ticketNo = ticket.ticketID;
@@ -19,7 +19,7 @@ public class customer implements Runnable{
     boolean inspected;        
     
 
-    public customer() {
+    protected customer() {
     }
     
     protected customer(int id) {
@@ -43,12 +43,11 @@ public class customer implements Runnable{
         this.inspected = inspected;
         this.waitingArea = waitingArea;
     }
-    
-    
+        
     @Override
     public void run(){
         try {
-            System.out.println("\nCustomer #" + id + " Enters the Bus terminal");
+            System.out.println("\nCustomer #" + id + " Enters the Bus Terminal Foyer");
             getATicket();
             goToWatingArea();
             
@@ -58,8 +57,7 @@ public class customer implements Runnable{
     
      protected void getATicket() throws ExecutionException, InterruptedException{
         
-         int getTicketFrom = (int )( 1 + Math.random() *3  );
-//change to queue//
+        int getTicketFrom = (int )( 1 + Math.random() *3  );
         
         switch (getTicketFrom) {
             case 1:
@@ -69,7 +67,6 @@ public class customer implements Runnable{
                     getATicket();
                 }
                 else{
-                    this.ticket = t;
                     this.ticketNo = t.ticketID;
                 }
                 break;
@@ -81,7 +78,6 @@ public class customer implements Runnable{
                     getATicket();
                 }
                 else{
-                    this.ticket = c1;
                     this.ticketNo = c1.ticketID;
                 }
                 break;
@@ -93,7 +89,7 @@ public class customer implements Runnable{
                     getATicket();
                 } 
                 else{
-                    this.ticket = c2;
+//                    this.ticket = c2;
                     this.ticketNo = c2.ticketID;
                 }
                 break;
@@ -117,13 +113,7 @@ public class customer implements Runnable{
                 break;
         }
      }
-    
+}
     //The customer class : get ticket --> go to waiting area (1-3)
     //if in waiting --> When bus arrives: scan and inspect ticket in any order 
     //-> then to bus   
-}
-
-//    @Override
-//    public List call() throws Exception {
-//        return List
-//    }
