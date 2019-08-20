@@ -45,7 +45,7 @@ public class customer implements Runnable{
     }
         
     @Override
-    public void run(){
+    public synchronized void run(){
         try {
             System.out.println("\nCustomer #" + id + " Enters the Bus Terminal Foyer");
             getATicket();

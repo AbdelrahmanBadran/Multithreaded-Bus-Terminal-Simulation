@@ -3,25 +3,24 @@
  * @author Abdelrahman Badran
  */
 package busterminal;
-import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeUnit;
 
 
 public class BusTerminal {
-    public Lock busLock = new ReentrantLock();
-    public Condition customersFull = busLock.newCondition();
-    public Condition busArrives = busLock.newCondition();
     
-    CyclicBarrier busBarrier = new CyclicBarrier(12);    
-    
+            
     public static void main(String[] args) throws InterruptedException {
         int custID = 1;
                 
-        ExecutorService CustomerExec = Executors.newFixedThreadPool(100);
+        WaitingArea2 WA2 = new WaitingArea2();
+        WA2.startBus2();
+        
+        ExecutorService CustomerExec = null;
+              
+        try{
+           CustomerExec = Executors.newFixedThreadPool(100);
      
         for (int i = 0; i < 150; i++) {
             
@@ -29,19 +28,22 @@ public class BusTerminal {
             //}//use a semaphore to control entrance to terminal (Break this in to 2 parts)
             
             customer cust = new customer(custID);//change///
-            CustomerExec.submit(cust);
-            
-            int custInterval = (int)( 100 + Math.random() *100); ///change later///
-            
-            try{
-                Thread.sleep(custInterval);
-            }
-            catch (InterruptedException e) {}
-
+            CustomerExec.submit(cust);            
+            int custInterval = (int)( 100 + Math.random() *100);                        
+            Thread.sleep(custInterval); //for demonstration purpose                        
             custID++;
+            
+            
+        }
+        }
+        finally{
+            if(CustomerExec != null) {
+                CustomerExec.shutdown();
+            }
+                CustomerExec.awaitTermination(1, TimeUnit.MINUTES);
         }
         
-        CustomerExec.shutdown();
+        
     }
 }
  //1.Customers

@@ -1,5 +1,7 @@
 package busterminal;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
@@ -17,29 +19,29 @@ public class WaitingArea1 {
     //CyclicBarrier busBarrier = new CyclicBarrier(12);
 
     private final Lock bus1Lock = new ReentrantLock(true);
-    private Condition fullPass = bus1Lock.newCondition();
-    private Condition bus1Arrives = bus1Lock.newCondition();
-        
+    private Condition customers1Full = bus1Lock.newCondition();
+    private Condition bus1Arrives = bus1Lock.newCondition();           
+    
     //array blocking queue of 12
     
     boolean IsBusHere = false;    
     protected int custCount = 0;    
     
-    private final Semaphore sem1 = new Semaphore(10, true);
+    private final Semaphore semA1 = new Semaphore(10, true);
 
     public synchronized void enterA1(customer cust) throws InterruptedException{
-        if(sem1.availablePermits() < 1) {
+        if(semA1.availablePermits() < 1) {
             System.out.println("\n\n\tSorry, waiting area 1 is full."
             + "\n\t\tCustomer# " + cust.id  + " has to wait for vacancy...");
         }
         try{
-            sem1.acquire();
+            semA1.acquire();
             custCount++;
             System.out.println("\nCustomer# " + cust.id  + " entered"
             + " Waiting Area 1");
         }
         catch (InterruptedException e) {}
-        
+               
         //can be a simple wait notify
         synchronized(this){
             bus1Lock.lock();
@@ -47,7 +49,7 @@ public class WaitingArea1 {
                 while(custCount > - 1){
                     bus1Arrives.await();
                 }
-                sem1.release();
+                semA1.release();
 //            System.out.println("Customer # " + cust.id + "is boarding the scheduled bus at Area 1");
 //            boardBus1(); //addToList
             
@@ -96,7 +98,7 @@ public class WaitingArea1 {
             //When bus is here
             System.out.println("\n\tCustomer# " + cust.id  + " is leaving "
                     + " Waiting Area 1...");
-            sem1.release();
+            semA1.release();
         }    
     }
 }   

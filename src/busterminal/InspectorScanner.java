@@ -26,7 +26,7 @@ class scanner1 {
 }
 
 
-class Inpector{
+class Inpector {
     customer cust;
 
     public Inpector(customer cust) {

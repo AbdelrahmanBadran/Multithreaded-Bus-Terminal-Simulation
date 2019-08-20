@@ -31,7 +31,7 @@ class ticketMachine{
     ExecutorService tickMachine = Executors.newSingleThreadExecutor();
     tMachinePrinter tickMPrinter = new tMachinePrinter();
     
-    private static final ReentrantLock tMachineLock  = new ReentrantLock(true);
+    private static final ReentrantLock tMachineLock  = new ReentrantLock(true); //to ensure fairness to tackle starvation
     
     ticket ticket;
     
@@ -164,7 +164,7 @@ class ticketCounter2 {
 
     class tCounterPrinter implements Callable<ticket>{
         @Override
-        public synchronized ticket call() throws Exception {
+        public synchronized ticket call() throws Exception { //Only one counter has access to the ticket printer at a time
             int ticketID = (int )( 1 + Math.random() * 3);
             ticket ticket = new ticket(ticketID);
             return ticket;
